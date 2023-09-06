@@ -4,10 +4,7 @@ LIBS = -lm -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 SRC_DIR=src
 OBJ_DIR=obj
-
-ifndef MY_FLAG
-	BIN_DIR=bin
-endif
+BIN_DIR=bin
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
