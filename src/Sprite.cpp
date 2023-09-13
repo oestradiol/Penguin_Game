@@ -6,10 +6,13 @@ using namespace std;
 
 #include "h_files/Sprite.h"
 #include "h_files/Game.h"
+#include "h_files/GameObject.h"
 
-Sprite::Sprite() : texture(nullptr), width(0), height(0) { }
+Sprite::Sprite(GameObject& associated)
+    : Component(associated), texture(nullptr), width(0), height(0) { }
 
-Sprite::Sprite(const string& file) : texture(nullptr), width(0), height(0) {
+Sprite::Sprite(GameObject& associated, const string& file)
+    : Component(associated), texture(nullptr), width(0), height(0) {
     Open(file);
 }
 
@@ -41,9 +44,23 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(int x, int y) {
-    SDL_Rect dstRect = {x, y, clipRect.w, clipRect.h};
+void Sprite::Render() {
+    if (!texture) {
+        return;
+    }
+    SDL_Rect dstRect = {
+        static_cast<int>(associated.box.x),
+        static_cast<int>(associated.box.y),
+        clipRect.w,
+        clipRect.h
+    }
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);
+}
+
+void Sprite::Update(float dt) {}
+
+bool Sprite::Is(const std::string& type) const {
+    return type == "Sprite";
 }
 
 int Sprite::GetWidth() const {
