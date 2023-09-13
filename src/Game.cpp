@@ -1,13 +1,13 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
-#include "SDL_include.h"
+#include "h_files/SDL_include.h"
 
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
 using namespace std;
 
-#include "Game.h"
+#include "h_files/Game.h"
 
 Game::Game(const string& title, int width, int height) {
     if (instance != nullptr) {

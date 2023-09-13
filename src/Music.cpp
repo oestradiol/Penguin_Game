@@ -1,9 +1,11 @@
-#include "Music.h"
 #include <iostream>
+using namespace std;
+
+#include "h_files/Music.h"
 
 Music::Music() : music(nullptr) {}
 
-Music::Music(const std::string& file) : music(nullptr) {
+Music::Music(const string& file) : music(nullptr) {
     Open(file);
 }
 
@@ -26,7 +28,7 @@ void Music::Stop(int msToStop) {
     }
 }
 
-void Music::Open(const std::string& file) {
+void Music::Open(const string& file) {
     if (music) {
         Mix_FreeMusic(music);
     }
@@ -34,7 +36,7 @@ void Music::Open(const std::string& file) {
     music = Mix_LoadMUS(file.c_str());
 
     if (!music) {
-        std::cerr << "Failed to load music: " << Mix_GetError() << std::endl;
+        cerr << "Failed to load music: " << Mix_GetError() << endl;
     }
 }
 
