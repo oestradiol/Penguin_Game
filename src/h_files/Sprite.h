@@ -5,15 +5,20 @@
 
 #include <string>
 
-class Sprite {
+class Sprite : public Component {
 public:
-    Sprite();
-    Sprite(const std::string& file);
+    Sprite(GameObject& associated);
+    Sprite(GameObject& associated, const std::string& file);
+
     ~Sprite();
 
     void Open(const std::string& file);
     void SetClip(int x, int y, int w, int h);
-    void Render(int x, int y);
+    
+    void Render() override;
+    void Update(float dt) override;
+    bool Is(const std::string& type) const override;
+
     int GetWidth() const;
     int GetHeight() const;
     bool IsOpen() const;
