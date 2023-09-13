@@ -1,5 +1,4 @@
-#ifndef MUSIC_H_
-#define MUSIC_H_
+#pragma once
 
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -20,5 +19,3 @@ public:
 private:
     Mix_Music* music;
 };
-
-#endif

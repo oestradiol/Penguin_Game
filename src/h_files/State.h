@@ -1,5 +1,4 @@
-#ifndef STATE_H_
-#define STATE_H_
+#pragma once
 
 #include "Sprite.h"
 #include "Music.h"
@@ -17,5 +16,3 @@ private:
     Music music;
     bool quitRequested;
 };
-
-#endif
