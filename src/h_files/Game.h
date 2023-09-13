@@ -1,5 +1,4 @@
-#ifndef GAME_H_
-#define GAME_H_
+#pragma once
 
 #define INCLUDE_SDL
 #include "SDL_include.h"
@@ -27,5 +26,3 @@ private:
     SDL_Renderer* renderer;
     State* state;
 };
-
-#endif
