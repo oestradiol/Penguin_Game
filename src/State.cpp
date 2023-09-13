@@ -1,9 +1,10 @@
 #define INCLUDE_SDL
-#include "SDL_include.h"
+#include "h_files/SDL_include.h"
 
 #include <iostream>
+using namespace std;
 
-#include "State.h"
+#include "h_files/State.h"
 
 State::State() : bg("img/ocean.jpg"), music("audio/stageState.ogg"), quitRequested(false) {
     music.Play();

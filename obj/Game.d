@@ -1,7 +1,9 @@
-obj/Game.o: src/Game.cpp src/SDL_include.h src/Game.h src/State.h \
- src/Sprite.h src/Music.h
-src/SDL_include.h:
-src/Game.h:
-src/State.h:
-src/Sprite.h:
-src/Music.h:
+obj/Game.o: src/Game.cpp src/h_files/SDL_include.h src/h_files/Game.h \
+ src/h_files/SDL_include.h src/h_files/State.h src/h_files/Sprite.h \
+ src/h_files/Music.h
+src/h_files/SDL_include.h:
+src/h_files/Game.h:
+src/h_files/SDL_include.h:
+src/h_files/State.h:
+src/h_files/Sprite.h:
+src/h_files/Music.h:
