@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 #include "h_files/Game.h"
@@ -16,21 +18,24 @@ Game::Game(const string& title, int width, int height) {
         instance = this;
     }
 
+    srand(time(NULL));
+
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
-        cerr << "Failed to initialize SDL: " << SDL_GetError() << endl;
+        cerr << "Game: Failed to initialize SDL!\nError: " << SDL_GetError() << endl;
         exit(1);
     }
 
     // Initialize IMG
-    int flags = IMG_INIT_JPG; // | IMG_INIT_PNG | IMG_INIT_TIF;
+    int flags = IMG_INIT_JPG | IMG_INIT_PNG; // | IMG_INIT_TIF;
     int result = IMG_Init(flags);
     if (result ^ flags) {
         stringstream err;
         err << "Warning - failed to load image loader(s):";
         if (!(result & IMG_INIT_JPG)) err << " JPG";
+        if (!(result & IMG_INIT_PNG)) err << " PNG";
         err << ".\nError: " << IMG_GetError() << endl;
-        cerr << err.str();
+        cerr << err.str() << endl;
     }
 
     // Initialize Mixer
@@ -38,14 +43,14 @@ Game::Game(const string& title, int width, int height) {
     result = Mix_Init(flags);
     if (result ^ flags) {
         stringstream err;
-        err << "Warning - failed to load Mixer loader(s):";
+        err << "Game: Warning - failed to load Mixer loader(s):";
         if (!(result & MIX_INIT_OGG)) err << " OGG";
         err << ".\nError: " << Mix_GetError() << endl;
-        cerr << err.str();
+        cerr << err.str() << endl;
     }
 
     if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024)) {
-        cerr << "Failed to open audio device.\nError " << Mix_GetError() << endl;
+        cerr << "Game: Failed to open audio device.\nError " << Mix_GetError() << endl;
     }
 
     Mix_AllocateChannels(32);
@@ -53,14 +58,14 @@ Game::Game(const string& title, int width, int height) {
     // Create Window
     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     if (!window) {
-        cerr << "Failed to create window.\nError: " << SDL_GetError() << endl;
+        cerr << "Game: Failed to create window.\nError: " << SDL_GetError() << endl;
         exit(1);
     }
 
     // Create Renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
-        std::cerr << "Failed to create renderer. Error: " << SDL_GetError() << std::endl;
+        cerr << "Game: Failed to create renderer.\nError: " << SDL_GetError() << endl;
         exit(1);
     }
 
@@ -127,14 +132,4 @@ void Game::Run() {
 
         // lastFrameTime = startTime;
     }
-}
-
-int main (int argc, char** argv) {
-    Game& game = Game::GetInstance();
-
-    game.Run();
-
-    delete &game;
-
-    return 0;
 }

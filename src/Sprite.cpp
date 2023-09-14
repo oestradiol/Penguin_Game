@@ -6,7 +6,6 @@ using namespace std;
 
 #include "h_files/Sprite.h"
 #include "h_files/Game.h"
-#include "h_files/GameObject.h"
 
 Sprite::Sprite(GameObject& associated)
     : Component(associated), texture(nullptr), width(0), height(0) { }
@@ -30,7 +29,7 @@ void Sprite::Open(const string& file) {
     texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
 
     if (!texture) {
-        cerr << "Failed to load texture: " << SDL_GetError() << endl;
+        cerr << "Sprite: Failed to load texture!\nError: " << SDL_GetError() << endl;
     } else {
         SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
         SetClip(0, 0, width, height);
@@ -42,6 +41,8 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.y = y;
     clipRect.w = w;
     clipRect.h = h;
+    associated.box.w = width;
+    associated.box.h = height;
 }
 
 void Sprite::Render() {
@@ -53,13 +54,13 @@ void Sprite::Render() {
         static_cast<int>(associated.box.y),
         clipRect.w,
         clipRect.h
-    }
+    };
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);
 }
 
-void Sprite::Update(float dt) {}
+void Sprite::Update(float dt) { }
 
-bool Sprite::Is(const std::string& type) const {
+bool Sprite::Is(const string& type) const {
     return type == "Sprite";
 }
 

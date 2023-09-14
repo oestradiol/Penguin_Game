@@ -3,9 +3,11 @@ using namespace std;
 
 #include "h_files/Music.h"
 
-Music::Music() : music(nullptr) {}
+Music::Music()
+    : music(nullptr) { }
 
-Music::Music(const string& file) : music(nullptr) {
+Music::Music(const string& file)
+    : music(nullptr) {
     Open(file);
 }
 
@@ -36,7 +38,7 @@ void Music::Open(const string& file) {
     music = Mix_LoadMUS(file.c_str());
 
     if (!music) {
-        cerr << "Failed to load music: " << Mix_GetError() << endl;
+        cerr << "Music: Failed to load music!\nError: " << Mix_GetError() << endl;
     }
 }
 
