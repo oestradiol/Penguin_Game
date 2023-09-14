@@ -5,11 +5,13 @@
 
 #include <string>
 
+#include "Component.h"
+#include "GameObject.h"
+
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
     Sprite(GameObject& associated, const std::string& file);
-
     ~Sprite();
 
     void Open(const std::string& file);
