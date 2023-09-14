@@ -101,19 +101,19 @@ Game& Game::GetInstance() {
 };
 
 void Game::Run() {
-    // const int frameRate = 30;
-    // const float frameTime = 1000.0f / frameRate;
+    const int frameRate = 60;
+    const float frameTime = 1000.0f / frameRate;
 
     float dt = 0.0f;
-    // Uint32 lastFrameTime = SDL_GetTicks();
+    Uint32 lastFrameTime = SDL_GetTicks();
 
     while (!state->QuitRequested()) {
-        // Uint32 startTime = SDL_GetTicks();
-        // Uint32 frameTimeElapsed = startTime - lastFrameTime;
-        // dt = static_cast<float>(frameTimeElapsed);
-        // if (dt > frameTime) {
-        //     dt = frameTime;
-        // }
+        Uint32 startTime = SDL_GetTicks();
+        Uint32 frameTimeElapsed = startTime - lastFrameTime;
+        dt = static_cast<float>(frameTimeElapsed);
+        if (dt > frameTime) {
+            dt = frameTime;
+        }
 
         // 1. Verificar, controlar e carregar as telas de jogo
         // 2. Receber e processar dados de entrada
@@ -121,15 +121,13 @@ void Game::Run() {
         state->Render(); // 4.
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(33);
 
-        dt += 33;
-        // Uint32 endTime = SDL_GetTicks();
-        // Uint32 frameTimeElapsedTotal = endTime - startTime;
-        // if (frameTimeElapsedTotal < frameTime) {
-        //     SDL_Delay(static_cast<Uint32>(frameTime - frameTimeElapsedTotal));
-        // }
+        Uint32 endTime = SDL_GetTicks();
+        Uint32 frameTimeElapsedTotal = endTime - startTime;
+        if (frameTimeElapsedTotal < frameTime) {
+            SDL_Delay(static_cast<Uint32>(frameTime - frameTimeElapsedTotal));
+        }
 
-        // lastFrameTime = startTime;
+        lastFrameTime = startTime;
     }
 }
