@@ -18,6 +18,7 @@ public:
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     Component* GetComponent(const std::string& type) const;
+    std::vector<Component*> GetAllComponents() const;
 
     Rect box;
 

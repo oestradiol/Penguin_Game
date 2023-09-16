@@ -19,6 +19,7 @@ public:
     void Stop();
     void Open(const std::string& file);
     bool IsOpen() const;
+    bool IsPlaying() const;
 
     void Update(float dt) override;
     void Render() override;

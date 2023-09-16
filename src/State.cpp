@@ -11,6 +11,7 @@ using namespace std;
 #include "h_files/Sprite.h"
 #include "h_files/Sound.h"
 #include "h_files/Face.h"
+#include "h_files/PostDeletionAction.h"
 
 State::State()
     : music("assets/audio/stageState.ogg"), quitRequested(false) {
@@ -120,12 +121,22 @@ void State::Input() {
 void State::AddObject(int mouseX, int mouseY) {
     GameObject* go = new GameObject();
 
-    new Sprite(*go, "assets/img/penguinface.png");
+    Sprite* sprite = new Sprite(*go, "assets/img/penguinface.png");
     go->box.x = mouseX - go->box.w / 2;
     go->box.y = mouseY - go->box.h / 2;
 
-    new Sound(*go, "assets/audio/boom.wav");
-    new Face(*go);
+    Face* face = new Face(*go);
+    Sound* sound = new Sound(*go, "assets/audio/boom.wav");
+
+    PostDeletionAction* afterDelete = new PostDeletionAction(*go);
+    *afterDelete += make_pair(
+        new Action([go, sprite, face, sound]() {
+            go->RemoveComponent(sprite);
+            go->RemoveComponent(face);
+            sound->Play();
+        }),
+        new CanDeleteAction(std::bind(&Sound::IsPlaying, sound))
+    );
 
     objectArray.emplace_back(go);
 }
