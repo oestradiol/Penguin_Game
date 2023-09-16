@@ -54,3 +54,12 @@ Component* GameObject::GetComponent(const string& type) const {
     }
     return nullptr;
 }
+
+std::vector<Component*> GameObject::GetAllComponents() const {
+    std::vector<Component*> result;
+    result.resize(components.size());
+    for (auto& component : components) {
+        result.push_back(component.get());
+    }
+    return result;
+}

@@ -1,7 +1,7 @@
 using namespace std;
 
 #include "h_files/Face.h"
-#include "h_files/Sound.h"
+#include "h_files/PostDeletionAction.h"
 
 Face::Face(GameObject& associated)
     : Component(associated), hitpoints(30) { }
@@ -9,10 +9,11 @@ Face::Face(GameObject& associated)
 void Face::Damage(int damage) {
     hitpoints -= damage;
     if (hitpoints <= 0) {
-        associated.RequestDelete();
-        Component* sound = associated.GetComponent("Sound");
-        if (sound) {
-            static_cast<Sound*>(sound)->Play();
+        Component* postDeletionAction = associated.GetComponent("PostDeletionAction");
+        if (postDeletionAction) {
+            static_cast<PostDeletionAction*>(postDeletionAction)->RequestDelete();
+        } else {
+            associated.RequestDelete();
         }
     }
 }
