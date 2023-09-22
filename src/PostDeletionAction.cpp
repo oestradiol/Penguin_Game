@@ -5,7 +5,7 @@ using namespace std;
 PostDeletionAction::PostDeletionAction(GameObject& associated)
     : Component(associated), isDeleteRequested(false) { }
 
-void PostDeletionAction::operator+=(std::pair<Action*, CanDeleteAction*> action) {
+void PostDeletionAction::operator+=(pair<Action*, CanDeleteAction*> action) {
     actions.emplace_back(action);
 };
 

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "Rect.h"
-class Component;
+class Component; // Only here to resolve circular dependency.
 
 class GameObject {
 public:

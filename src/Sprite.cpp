@@ -4,6 +4,7 @@
 #include <iostream>
 using namespace std;
 
+#include "h_files/Resources.h"
 #include "h_files/Sprite.h"
 #include "h_files/Game.h"
 
@@ -15,22 +16,10 @@ Sprite::Sprite(GameObject& associated, const string& file)
     Open(file);
 }
 
-Sprite::~Sprite() {
-    if (texture) {
-        SDL_DestroyTexture(texture);
-    }
-}
-
 void Sprite::Open(const string& file) {
+    texture = Resources::GetImage(file);
+
     if (texture) {
-        SDL_DestroyTexture(texture);
-    }
-
-    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
-
-    if (!texture) {
-        cerr << "Sprite: Failed to load texture!\nError: " << SDL_GetError() << endl;
-    } else {
         SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
         SetClip(0, 0, width, height);
     }
@@ -46,15 +35,14 @@ void Sprite::SetClip(int x, int y, int w, int h) {
 }
 
 void Sprite::Render() {
+    Render(static_cast<int>(associated.box.x), static_cast<int>(associated.box.y));
+}
+
+void Sprite::Render(int x, int y) {
     if (!texture) {
         return;
     }
-    SDL_Rect dstRect = {
-        static_cast<int>(associated.box.x),
-        static_cast<int>(associated.box.y),
-        clipRect.w,
-        clipRect.h
-    };
+    SDL_Rect dstRect = { x, y, clipRect.w, clipRect.h };
     SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);
 }
 

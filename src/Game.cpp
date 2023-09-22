@@ -10,6 +10,7 @@
 using namespace std;
 
 #include "h_files/Game.h"
+#include "h_files/Resources.h"
 
 Game::Game(const string& title, int width, int height) {
     if (instance != nullptr) {
@@ -130,4 +131,8 @@ void Game::Run() {
 
         lastFrameTime = startTime;
     }
+
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }

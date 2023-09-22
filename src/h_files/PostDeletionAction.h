@@ -3,7 +3,6 @@
 #include <functional>
 
 #include "Component.h"
-#include "GameObject.h"
 
 typedef std::function<void()> Action;
 typedef std::function<bool()> CanDeleteAction;

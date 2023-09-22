@@ -1,6 +1,7 @@
 using namespace std;
 
 #include "h_files/Sound.h"
+#include "h_files/Resources.h"
 
 Sound::Sound(GameObject& associated)
     : Component(associated), chunk(nullptr), channel(-1) { }
@@ -12,9 +13,6 @@ Sound::Sound(GameObject& associated, const string& file)
 
 Sound::~Sound() {
     Stop();
-    if (chunk) {
-        Mix_FreeChunk(chunk);
-    }
 }
 
 void Sound::Play(int times) {
@@ -34,15 +32,7 @@ void Sound::Stop() {
 
 void Sound::Open(const string& file) {
     Stop();
-    if (chunk) {
-        Mix_FreeChunk(chunk);
-    }
-
-    chunk = Mix_LoadWAV(file.c_str());
-
-    if (!chunk) {
-        cerr << "Sound: Failed to load WAV!\nError: " << Mix_GetError() << endl;
-    }
+    chunk = Resources::GetSound(file);
 }
 
 bool Sound::IsOpen() const {

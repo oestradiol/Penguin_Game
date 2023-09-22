@@ -6,18 +6,18 @@
 #include <string>
 
 #include "Component.h"
-#include "GameObject.h"
 
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
     Sprite(GameObject& associated, const std::string& file);
-    ~Sprite();
 
     void Open(const std::string& file);
     void SetClip(int x, int y, int w, int h);
     
     void Render() override;
+    void Render(int x, int y);
+    
     void Update(float dt) override;
     bool Is(const std::string& type) const override;
 
