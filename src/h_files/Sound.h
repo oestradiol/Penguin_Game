@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include "Component.h"
-#include "GameObject.h"
 
 class Sound : public Component {
 public:

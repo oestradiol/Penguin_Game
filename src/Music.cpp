@@ -2,6 +2,7 @@
 using namespace std;
 
 #include "h_files/Music.h"
+#include "h_files/Resources.h"
 
 Music::Music()
     : music(nullptr) { }
@@ -13,9 +14,6 @@ Music::Music(const string& file)
 
 Music::~Music() {
     Stop();
-    if (music) {
-        Mix_FreeMusic(music);
-    }
 }
 
 void Music::Play(int times) {
@@ -31,15 +29,7 @@ void Music::Stop(int msToStop) {
 }
 
 void Music::Open(const string& file) {
-    if (music) {
-        Mix_FreeMusic(music);
-    }
-
-    music = Mix_LoadMUS(file.c_str());
-
-    if (!music) {
-        cerr << "Music: Failed to load music!\nError: " << Mix_GetError() << endl;
-    }
+    music = Resources::GetMusic(file);
 }
 
 bool Music::IsOpen() const {

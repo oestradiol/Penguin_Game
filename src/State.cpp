@@ -7,8 +7,7 @@
 using namespace std;
 
 #include "h_files/State.h"
-#include "h_files/GameObject.h"
-#include "h_files/Sprite.h"
+#include "h_files/TileMap.h"
 #include "h_files/Sound.h"
 #include "h_files/Face.h"
 #include "h_files/PostDeletionAction.h"
@@ -28,12 +27,15 @@ bool State::QuitRequested() {
 }
 
 void State::LoadAssets() {
-    // Initialize bg
+    // Initialize map
     GameObject* go = new GameObject();
     go->box.x = 0;
     go->box.y = 0;
 
     new Sprite(*go, "assets/img/ocean.jpg");
+
+    TileSet* tileSet = new TileSet(64, 64, "assets/img/tileset.png");
+    new TileMap(*go, "assets/map/tileMap.txt", tileSet);
 
     objectArray.emplace_back(go);
 }
@@ -128,14 +130,13 @@ void State::AddObject(int mouseX, int mouseY) {
     Face* face = new Face(*go);
     Sound* sound = new Sound(*go, "assets/audio/boom.wav");
 
-    PostDeletionAction* afterDelete = new PostDeletionAction(*go);
-    *afterDelete += make_pair(
+    *new PostDeletionAction(*go) += make_pair(
         new Action([go, sprite, face, sound]() {
             go->RemoveComponent(sprite);
             go->RemoveComponent(face);
             sound->Play();
         }),
-        new CanDeleteAction(std::bind(&Sound::IsPlaying, sound))
+        new CanDeleteAction(bind(&Sound::IsPlaying, sound))
     );
 
     objectArray.emplace_back(go);
