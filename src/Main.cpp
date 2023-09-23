@@ -1,4 +1,4 @@
-#include "h_files/Game.h"
+#include "core/headers/Game.h"
 
 int main (int argc, char** argv) {
     Game& game = Game::GetInstance();
