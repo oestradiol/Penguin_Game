@@ -6,7 +6,7 @@ SRC_DIR=src
 OBJ_DIR=obj
 BIN_DIR=bin
 
-SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+SRC_FILES = $(wildcard $(SRC_DIR)/**/*.cpp) $(SRC_DIR)/Main.cpp
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 DEP_FILES = $(OBJ_FILES:.o=.d)
 
@@ -24,7 +24,7 @@ all: setup $(PROGRAMS)
 
 .PHONY: setup
 setup:
-	mkdir -p $(BIN_DIR) $(OBJ_DIR)
+	mkdir -p $(BIN_DIR) $(sort $(dir $(OBJ_FILES)))
 
 penguin: $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $(BIN_DIR)/$@
