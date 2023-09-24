@@ -1,6 +1,7 @@
 using namespace std;
 
 #include "../core/headers/InputManager.h"
+#include "../core/headers/Camera.h"
 #include "headers/PostDeletionAction.h"
 #include "headers/Face.h"
 
@@ -21,8 +22,12 @@ void Face::Damage(int damage) {
 
 void Face::Update(float dt) {
     InputManager& inputManager = InputManager::GetInstance();
-    if (inputManager.MousePress(LEFT_MOUSE_BUTTON) && associated.box.Contains({ (float) inputManager.GetMouseX(), (float) inputManager.GetMouseY() }))
+    pair<int, int> mousePos = Camera::GetMousePos();
+    if (inputManager.MousePress(LEFT_MOUSE_BUTTON) &&
+        associated.box.Contains({ (int) mousePos.first, (int) mousePos.second })) {
+
         Damage(rand() % 10 + 10);
+    }
 }
 
 void Face::Render() { }

@@ -15,22 +15,31 @@ public:
 
     SDL_Renderer* GetRenderer() const;
     State& GetState() const;
+    float GetDeltaTime() const;
+
     static Game& GetInstance();
 
 private:
     Game(const std::string& title, int width, int height);
+    void CalculateDeltaTime();
 
     static Game* instance;
-    
+
     SDL_Window* window;
     SDL_Renderer* renderer;
     State* state;
+    Uint32 frameStart;
+    float dt;
 };
 
 inline SDL_Renderer* Game::GetRenderer() const {
     return renderer;
-};
+}
 
 inline State& Game::GetState() const {
     return *state;
-};
+}
+
+inline float Game::GetDeltaTime() const {
+    return dt;
+}

@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "../../components/headers/Music.h"
+#include "../../utils/headers/TileSet.h"
 #include "GameObject.h"
 
 class State {
@@ -21,6 +22,7 @@ public:
 private:
     Music music;
     bool quitRequested;
+    TileSet* tileSet;
 
     std::vector<std::unique_ptr<GameObject>> objectArray;
 };

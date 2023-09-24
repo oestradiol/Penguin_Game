@@ -13,7 +13,8 @@ using namespace std;
 #include "headers/Resources.h"
 #include "headers/InputManager.h"
 
-Game::Game(const string& title, int width, int height) {
+Game::Game(const string& title, int width, int height)
+    : frameStart(0), dt(0) {
     if (instance != nullptr) {
         throw new runtime_error("A game instance already exists!");
     } else {
@@ -94,36 +95,23 @@ Game& Game::GetInstance() {
     return *(new Game("Nome: Elaina Lynn A., Matrícula: 200016750", 1024, 600));
 };
 
+void Game::CalculateDeltaTime() {
+    Uint32 currentFrameTime = SDL_GetTicks();
+    dt = static_cast<float>(currentFrameTime - frameStart) / 1000.0f;
+    frameStart = currentFrameTime;
+}
+
 void Game::Run() {
-    const int frameRate = 60;
-    const float frameTime = 1000.0f / frameRate;
-
-    float dt = 0.0f;
-    Uint32 lastFrameTime = SDL_GetTicks();
-
     while (!state->QuitRequested()) {
-        Uint32 startTime = SDL_GetTicks();
-        Uint32 frameTimeElapsed = startTime - lastFrameTime;
-        dt = static_cast<float>(frameTimeElapsed);
-        if (dt > frameTime) {
-            dt = frameTime;
-        }
+        CalculateDeltaTime();
 
-        // 1. Verificar, controlar e carregar as telas de jogo
+        // TODO: 1. Verificar, controlar e carregar as telas de jogo
         InputManager& inputManager = InputManager::GetInstance();
         inputManager.Update();
-        state->Update(dt); // 3.
-        state->Render(); // 4.
+        state->Update(dt);
+        state->Render();
 
         SDL_RenderPresent(renderer);
-
-        Uint32 endTime = SDL_GetTicks();
-        Uint32 frameTimeElapsedTotal = endTime - startTime;
-        if (frameTimeElapsedTotal < frameTime) {
-            SDL_Delay(static_cast<Uint32>(frameTime - frameTimeElapsedTotal));
-        }
-
-        lastFrameTime = startTime;
     }
 
     Resources::ClearImages();
