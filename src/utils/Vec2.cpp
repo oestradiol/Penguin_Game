@@ -19,6 +19,24 @@ Vec2 Vec2::operator*(float scale) const {
     return Vec2(x * scale, y * scale);
 }
 
+Vec2 Vec2::operator+=(const Vec2& other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+}
+
+Vec2 Vec2::operator-=(const Vec2& other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+}
+
+Vec2 Vec2::operator*=(float scale) {
+    x *= scale;
+    y *= scale;
+    return *this;
+}
+
 float Vec2::Magnitude() const {
     return sqrt(x * x + y * y);
 }

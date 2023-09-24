@@ -6,11 +6,13 @@
 #include <iostream>
 using namespace std;
 
+#include "../components/headers/PostDeletionAction.h"
+#include "../components/headers/CameraFollower.h"
 #include "../components/headers/TileMap.h"
 #include "../components/headers/Sound.h"
 #include "../components/headers/Face.h"
-#include "../components/headers/PostDeletionAction.h"
 #include "headers/InputManager.h"
+#include "headers/Camera.h"
 #include "headers/State.h"
 
 State::State()
@@ -21,19 +23,19 @@ State::State()
 }
 State::~State() {
     objectArray.clear();
+    delete tileSet;
 }
 
 void State::LoadAssets() {
     // Initialize map
     GameObject* go = new GameObject();
-    go->box.x = 0;
-    go->box.y = 0;
-
     new Sprite(*go, "assets/img/ocean.jpg");
+    new CameraFollower(*go);
+    objectArray.emplace_back(go);
 
-    TileSet* tileSet = new TileSet(64, 64, "assets/img/tileset.png");
+    go = new GameObject();
+    tileSet = new TileSet(64, 64, "assets/img/tileset.png");
     new TileMap(*go, "assets/map/tileMap.txt", tileSet);
-
     objectArray.emplace_back(go);
 }
 
@@ -45,7 +47,8 @@ void State::Update(float dt) {
     }
 
     if (inputManager.KeyPress(SPACE_KEY)) {
-        Vec2 objPos = Vec2(200, 0).Rotated(-M_PI + M_PI * (rand() % 1001) / 500.0) + Vec2(inputManager.GetMouseX(), inputManager.GetMouseY());
+        pair<int, int> mousePos = Camera::GetMousePos();
+        Vec2 objPos = Vec2(200, 0).Rotated(-M_PI + M_PI * (rand() % 1001) / 500.0) + Vec2(mousePos.first, mousePos.second);
         AddObject((int)objPos.x, (int)objPos.y);
     }
     
@@ -58,6 +61,8 @@ void State::Update(float dt) {
             objectArray.erase(objectArray.begin() + pos);
         }
     }
+
+    Camera::Update(dt);
 }
 
 void State::Render() {

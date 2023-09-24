@@ -12,7 +12,7 @@ public:
 
 private:
     GameObject tileSetGO;
-    Sprite tileSet;
+    Sprite* tileSet;
     int rows;
     int columns;
     int tileWidth;

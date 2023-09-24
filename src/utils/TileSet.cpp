@@ -5,14 +5,14 @@ using namespace std;
 #include "headers/TileSet.h"
 
 TileSet::TileSet(int tileWidth, int tileHeight, const string& file)
-    : tileSetGO(), tileSet(tileSetGO, file), tileWidth(tileWidth), tileHeight(tileHeight) {
-    if (!tileSet.IsOpen()) {
+    : tileSetGO(), tileSet(new Sprite(tileSetGO, file)), tileWidth(tileWidth), tileHeight(tileHeight) {
+    if (!tileSet->IsOpen()) {
         cerr << "TileSet: Failed to open Sprite." << endl;
         return;
     }
     
-    columns = tileSet.GetWidth() / tileWidth;
-    rows = tileSet.GetHeight() / tileHeight;
+    columns = tileSet->GetWidth() / tileWidth;
+    rows = tileSet->GetHeight() / tileHeight;
 }
 
 void TileSet::RenderTile(unsigned index, float x, float y) {
@@ -26,6 +26,6 @@ void TileSet::RenderTile(unsigned index, float x, float y) {
     int clipX = (index % columns) * tileWidth;
     int clipY = (index / columns) * tileHeight;
 
-    tileSet.SetClip(clipX, clipY, tileWidth, tileHeight);
-    tileSet.Render(x, y);
+    tileSet->SetClip(clipX, clipY, tileWidth, tileHeight);
+    tileSet->Render(x, y);
 }

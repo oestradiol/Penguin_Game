@@ -3,11 +3,13 @@ using namespace std;
 
 #include "../components/headers/Component.h"
 #include "headers/GameObject.h"
+#include "headers/Camera.h"
 
 GameObject::GameObject()
     : destroyRequested(false) { }
 
 GameObject::~GameObject() {
+    Camera::Unfollow(this);
     components.clear();
 }
 

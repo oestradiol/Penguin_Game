@@ -7,6 +7,7 @@
 using namespace std;
 
 #include "headers/TileMap.h"
+#include "../core/headers/Camera.h"
 
 TileMap::TileMap(GameObject& associated, const string& file, TileSet* tileSet)
     : Component(associated), tileSet(tileSet), mapWidth(0), mapHeight(0), mapDepth(0) {
@@ -56,11 +57,16 @@ int& TileMap::At(int x, int y, int z) {
     return tileMatrix[x + y * mapWidth + z * mapWidth * mapHeight];
 }
 
+#define mainLayer 0
+#define parallaxConst 1
 void TileMap::Render() {
-    int x = associated.box.x;
-    int y = associated.box.y;
+    Vec2& cameraPos = Camera::pos;
+    Rect& objectBox = associated.box;
+    int x = cameraPos.x - objectBox.x;
+    int y = cameraPos.y - objectBox.y;
     for (int i = 0; i < mapDepth; ++i) {
-        RenderLayer(i, x, y);
+        float parallaxOffset = (parallaxConst * (i + 1)) / (mainLayer + 1);
+        RenderLayer(i, x * parallaxOffset, y * parallaxOffset);
     }
 }
 

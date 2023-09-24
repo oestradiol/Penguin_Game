@@ -32,7 +32,7 @@ private:
     SDL_Rect clipRect;
 };
 
-inline bool Sprite::Is(const string& type) const {
+inline bool Sprite::Is(const std::string& type) const {
     return type == "Sprite";
 }
 

@@ -5,6 +5,7 @@
 using namespace std;
 
 #include "../core/headers/Resources.h"
+#include "../core/headers/Camera.h"
 #include "../core/headers/Game.h"
 #include "headers/Sprite.h"
 
@@ -35,7 +36,11 @@ void Sprite::SetClip(int x, int y, int w, int h) {
 }
 
 void Sprite::Render() {
-    Render(static_cast<int>(associated.box.x), static_cast<int>(associated.box.y));
+    Vec2& cameraPos = Camera::pos;
+    Rect& objectBox = associated.box;
+    int x = objectBox.x - cameraPos.x;
+    int y = objectBox.y - cameraPos.y;
+    Render(x, y);
 }
 
 void Sprite::Render(int x, int y) {

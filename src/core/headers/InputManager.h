@@ -12,6 +12,10 @@
 
 #define ESCAPE_KEY SDLK_ESCAPE
 #define SPACE_KEY SDLK_SPACE
+#define W_KEY SDLK_w
+#define A_KEY SDLK_a
+#define S_KEY SDLK_s
+#define D_KEY SDLK_d
 
 #include <unordered_map>
 
