@@ -3,30 +3,36 @@
 #include <vector>
 #include <memory>
 
-#include "../../components/headers/Music.h"
 #include "../../utils/headers/TileSet.h"
 #include "GameObject.h"
+#include "Music.h"
 
 class State {
 public:
     State();
     ~State();
 
-    bool QuitRequested();
+    void Start();
+
     void LoadAssets();
     void Update(float dt);
     void Render();
 
-    void AddObject(int mouseX, int mouseY);
+    std::weak_ptr<GameObject> AddObject(GameObject* go);
+    std::weak_ptr<GameObject> GetObjectPtr(GameObject* go) const;
+
+    bool QuitRequested() const;
 
 private:
-    Music music;
     bool quitRequested;
-    TileSet* tileSet;
+    bool started;
 
-    std::vector<std::unique_ptr<GameObject>> objectArray;
+    std::vector<std::shared_ptr<GameObject>> objectArray;
+
+    Music* music;
+    TileSet* tileSet;
 };
 
-inline bool State::QuitRequested() {
+inline bool State::QuitRequested() const {
     return quitRequested;
 }

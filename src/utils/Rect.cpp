@@ -24,6 +24,12 @@ Rect Rect::operator-=(const Vec2& vec) {
     return *this;
 }
 
+void Rect::SetCenter(Vec2 newCenter) {
+    newCenter = newCenter - Vec2(w / 2.0f, h / 2.0f);
+    x = newCenter.x;
+    y = newCenter.y;
+}
+
 Vec2 Rect::Center() const {
     return Vec2(x + w / 2.0f, y + h / 2.0f);
 }

@@ -11,16 +11,20 @@ public:
     GameObject();
     ~GameObject();
 
+    void Start();
     void Update(float dt);
     void Render();
-    bool IsDestroyed() const;
     void Destroy();
+
+    bool IsDestroyed() const;
+
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     Component* GetComponent(const std::string& type) const;
     std::vector<Component*> GetAllComponents() const;
 
     Rect box;
+    bool started;
 
 private:
     std::vector< std::unique_ptr<Component> > components;

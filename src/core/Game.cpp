@@ -102,6 +102,8 @@ void Game::CalculateDeltaTime() {
 }
 
 void Game::Run() {
+    state->Start();
+
     while (!state->QuitRequested()) {
         CalculateDeltaTime();
 

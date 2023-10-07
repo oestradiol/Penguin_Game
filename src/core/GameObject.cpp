@@ -6,11 +6,18 @@ using namespace std;
 #include "headers/Camera.h"
 
 GameObject::GameObject()
-    : destroyRequested(false) { }
+    : started(false), destroyRequested(false) { }
 
 GameObject::~GameObject() {
     Camera::Unfollow(this);
     components.clear();
+}
+
+void GameObject::Start() {
+    for (const auto& component : components)
+        component->Start();
+    
+    started = true;
 }
 
 void GameObject::Update(float dt) {
@@ -33,6 +40,8 @@ void GameObject::Render() {
 
 void GameObject::AddComponent(Component* cpt) {
     components.emplace_back(cpt);
+    if (started)
+        cpt->Start();
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
@@ -47,7 +56,7 @@ void GameObject::RemoveComponent(Component* cpt) {
 }
 
 Component* GameObject::GetComponent(const string& type) const {
-    for (auto& component : components) {
+    for (const auto& component : components) {
         if (component->Is(type)) {
             return component.get();
         }
