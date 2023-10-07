@@ -27,5 +27,5 @@ void TileSet::RenderTile(unsigned index, float x, float y) {
     int clipY = (index / columns) * tileHeight;
 
     tileSet->SetClip(clipX, clipY, tileWidth, tileHeight);
-    tileSet->Render(x, y);
+    tileSet->Render(x, y, Vec2(tileWidth, tileHeight));
 }

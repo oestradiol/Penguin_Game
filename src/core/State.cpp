@@ -6,37 +6,49 @@
 #include <iostream>
 using namespace std;
 
-#include "../components/headers/PostDeletionAction.h"
 #include "../components/headers/CameraFollower.h"
 #include "../components/headers/TileMap.h"
-#include "../components/headers/Sound.h"
-#include "../components/headers/Face.h"
+#include "../components/headers/Alien.h"
 #include "headers/InputManager.h"
 #include "headers/Camera.h"
 #include "headers/State.h"
 
 State::State()
-    : music("assets/audio/stageState.ogg"), quitRequested(false) {
-    music.Play();
+    : quitRequested(false), started(false) { }
 
-    LoadAssets();
-}
 State::~State() {
     objectArray.clear();
     delete tileSet;
+    delete music;
 }
 
-void State::LoadAssets() {
-    // Initialize map
+void State::Start() {
+    LoadAssets();
+    music->Play();
+
     GameObject* go = new GameObject();
     new Sprite(*go, "assets/img/ocean.jpg");
     new CameraFollower(*go);
-    objectArray.emplace_back(go);
+    AddObject(go);
 
     go = new GameObject();
-    tileSet = new TileSet(64, 64, "assets/img/tileset.png");
     new TileMap(*go, "assets/map/tileMap.txt", tileSet);
-    objectArray.emplace_back(go);
+    AddObject(go);
+
+    go = new GameObject();
+    new Alien(*go, 3);
+    go->box.SetCenter(Vec2(512, 300));
+    AddObject(go);
+
+    for (const auto& object : objectArray)
+        object->Start();
+
+    started = true;
+}
+
+void State::LoadAssets() {
+    music = new Music("assets/audio/stageState.ogg");
+    tileSet = new TileSet(64, 64, "assets/img/tileset.png");
 }
 
 void State::Update(float dt) {
@@ -44,12 +56,6 @@ void State::Update(float dt) {
 
     if (inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested()) {
         quitRequested = true;
-    }
-
-    if (inputManager.KeyPress(SPACE_KEY)) {
-        pair<int, int> mousePos = Camera::GetMousePos();
-        Vec2 objPos = Vec2(200, 0).Rotated(-M_PI + M_PI * (rand() % 1001) / 500.0) + Vec2(mousePos.first, mousePos.second);
-        AddObject((int)objPos.x, (int)objPos.y);
     }
     
     size_t len = objectArray.size() - 1;
@@ -71,24 +77,22 @@ void State::Render() {
     }
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    GameObject* go = new GameObject();
+weak_ptr<GameObject> State::AddObject(GameObject* go) {
+    shared_ptr<GameObject> goPtr(go);
+    objectArray.push_back(goPtr);
 
-    Sprite* sprite = new Sprite(*go, "assets/img/penguinface.png");
-    go->box.x = mouseX - go->box.w / 2;
-    go->box.y = mouseY - go->box.h / 2;
+    if (started)
+        goPtr->Start();
 
-    Face* face = new Face(*go);
-    Sound* sound = new Sound(*go, "assets/audio/boom.wav");
+    return goPtr;
+}
 
-    *new PostDeletionAction(*go) += make_pair(
-        new Action([go, sprite, face, sound]() {
-            sprite->Destroy();
-            face->Destroy();
-            sound->Play();
-        }),
-        new CanDeleteAction(bind(&Sound::IsPlaying, sound))
-    );
-
-    objectArray.emplace_back(go);
+weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) const {
+    for (const auto& object : objectArray) {
+        if (object.get() == go) {
+            return object;
+        }
+    }
+    
+    return shared_ptr<GameObject>(nullptr);
 }

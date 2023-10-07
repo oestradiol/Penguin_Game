@@ -17,6 +17,7 @@ public:
     Rect operator+=(const Vec2& vec);
     Rect operator-=(const Vec2& vec);
 
+    void SetCenter(Vec2 newCenter);
     Vec2 Center() const;
     
     float Distance(const Rect& other) const;

@@ -14,6 +14,10 @@ TileMap::TileMap(GameObject& associated, const string& file, TileSet* tileSet)
     Load(file);
 }
 
+void TileMap::Start() {
+    started = true;
+}
+
 void TileMap::Load(const string& file) {
  
     ifstream mapFile(file);

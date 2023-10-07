@@ -10,11 +10,15 @@ using namespace std;
 #include "headers/Sprite.h"
 
 Sprite::Sprite(GameObject& associated)
-    : Component(associated), texture(nullptr), width(0), height(0) { }
+    : Component(associated), texture(nullptr), width(0), height(0), scale(1, 1), angleDeg(0) { }
 
 Sprite::Sprite(GameObject& associated, const string& file)
-    : Component(associated), texture(nullptr), width(0), height(0) {
+    : Component(associated), texture(nullptr), width(0), height(0), scale(1, 1), angleDeg(0) {
     Open(file);
+}
+
+void Sprite::Start() {
+    started = true;
 }
 
 void Sprite::Open(const string& file) {
@@ -40,15 +44,26 @@ void Sprite::Render() {
     Rect& objectBox = associated.box;
     int x = objectBox.x - cameraPos.x;
     int y = objectBox.y - cameraPos.y;
-    Render(x, y);
+    Render(x, y, Vec2(objectBox.w, objectBox.h));
 }
 
-void Sprite::Render(int x, int y) {
+void Sprite::Render(int x, int y, Vec2 dimensions) {
     if (!texture) {
         return;
     }
-    SDL_Rect dstRect = { x, y, clipRect.w, clipRect.h };
-    SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect);
+
+    SDL_Rect dstRect = { x, y, int(dimensions.x), int(dimensions.y) };
+    SDL_RendererFlip flipType = SDL_FLIP_NONE;
+    SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstRect, angleDeg, nullptr, flipType);
 }
 
 void Sprite::Update(float dt) { }
+
+void Sprite::SetScale(float scaleX, float scaleY) {
+    scale.x = scaleX != 0 ? scaleX : scale.x;
+    scale.y = scaleY != 0 ? scaleY : scale.y;
+    Vec2 boxCenter = associated.box.Center();
+    associated.box.w = static_cast<int>(width * scale.x);
+    associated.box.h = static_cast<int>(height * scale.y);
+    associated.box.SetCenter(boxCenter);
+}

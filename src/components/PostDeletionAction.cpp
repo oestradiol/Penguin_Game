@@ -20,6 +20,10 @@ void PostDeletionAction::operator()() {
     called = true;
 }
 
+void PostDeletionAction::Start() {
+    started = true;
+}
+
 void PostDeletionAction::Update(float _) {
     if (!called) return;
 
