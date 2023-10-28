@@ -7,11 +7,11 @@
 
 class Minion : public Component {
 public:
+    static constexpr float MINION_SPEED = 100.0;
+
     Minion(GameObject& associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg = 0);
 
-    void Start() override;
     void Update(float dt) override;
-    void Render() override;
     
     bool Is(const std::string& type) const override;
 
@@ -22,7 +22,7 @@ private:
     void UpdateRot(shared_ptr<GameObject>& centerPtr);
 
     std::weak_ptr<GameObject> alienCenter;
-    float arc;
+    float arcDeg;
 };
 
 inline bool Minion::Is(const std::string& type) const {

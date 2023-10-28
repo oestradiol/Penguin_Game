@@ -9,10 +9,12 @@ public:
     explicit Component(GameObject& associated);
     virtual ~Component();
 
-    virtual void Start() = 0;
-    virtual void Update(float dt) = 0;
-    virtual void Render() = 0;
+    virtual void Start();
+    virtual void Update(float dt);
+    virtual void Render();
     virtual bool Is(const std::string& type) const = 0;
+    
+    virtual void NotifyCollision(GameObject& other);
 
     void Destroy();
     bool IsDestroyed();
@@ -23,6 +25,14 @@ protected:
     bool started;
 };
 
+inline void Component::Start() {
+    started = true;
+}
+
+inline void Component::Update(float dt) { }
+
+inline void Component::Render() { }
+
 inline void Component::Destroy() {
     destroyRequested = true;
 }
@@ -30,3 +40,5 @@ inline void Component::Destroy() {
 inline bool Component::IsDestroyed() {
     return destroyRequested;
 }
+
+inline void Component::NotifyCollision(GameObject& other) { }

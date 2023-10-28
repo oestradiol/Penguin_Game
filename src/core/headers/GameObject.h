@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <vector>
 #include <memory>
 
@@ -21,7 +22,9 @@ public:
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     Component* GetComponent(const std::string& type) const;
-    std::vector<Component*> GetAllComponents() const;
+    std::set<std::string> HasComponentsOfTypes(std::set<std::string> types) const;
+
+    void NotifyCollision(GameObject& other) const;
 
     Rect box;
     bool started;

@@ -10,9 +10,9 @@ void PostDeletionAction::operator+=(pair<Action*, CanDeleteAction*> action) {
 };
 
 void PostDeletionAction::operator()() {
-    size_t len = actions.size() - 1;
-    for (size_t i = 0; i <= len; i++) {
-        size_t pos = len - i;
+    size_t len = actions.size();
+    for (size_t i = 0; i < len; i++) {
+        size_t pos = len - i - 1;
         auto& action = actions[pos];
         (*action.first)();
     }
@@ -20,16 +20,12 @@ void PostDeletionAction::operator()() {
     called = true;
 }
 
-void PostDeletionAction::Start() {
-    started = true;
-}
-
 void PostDeletionAction::Update(float _) {
     if (!called) return;
 
-    size_t len = actions.size() - 1;
-    for (size_t i = 0; i <= len; i++) {
-        size_t pos = len - i;
+    size_t len = actions.size();
+    for (size_t i = 0; i < len; i++) {
+        size_t pos = len - i - 1;
         auto& action = actions[pos];
         if ((*action.second)()) {
             return;
@@ -38,5 +34,3 @@ void PostDeletionAction::Update(float _) {
 
     associated.Destroy();
 }
-
-void PostDeletionAction::Render() { }

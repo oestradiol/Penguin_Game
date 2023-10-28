@@ -92,7 +92,7 @@ Game& Game::GetInstance() {
         return *instance;
     }
 
-    return *(new Game("Nome: Elaina Lynn A., Matrícula: 200016750", 1024, 600));
+    return *(new Game("Nome: Elaina Lynn A., Matrícula: 200016750", WIN_WIDTH, WIN_HEIGHT));
 };
 
 void Game::CalculateDeltaTime() {

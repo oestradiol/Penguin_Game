@@ -10,9 +10,12 @@ public:
 
     Vec2 operator+(const Vec2& other) const;
     Vec2 operator-(const Vec2& other) const;
+    Vec2 operator*(const Vec2& other) const;
     Vec2 operator*(float scale) const;
+
     Vec2 operator+=(const Vec2& other);
     Vec2 operator-=(const Vec2& other);
+    Vec2 operator*=(const Vec2& other);
     Vec2 operator*=(float scale);
 
     float Magnitude() const;
