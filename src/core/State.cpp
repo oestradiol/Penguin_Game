@@ -7,8 +7,10 @@
 using namespace std;
 
 #include "../components/headers/CameraFollower.h"
+#include "../components/headers/PenguinBody.h"
 #include "../components/headers/TileMap.h"
 #include "../components/headers/Alien.h"
+#include "../utils/headers/Collision.h"
 #include "headers/InputManager.h"
 #include "headers/Camera.h"
 #include "headers/State.h"
@@ -40,8 +42,15 @@ void State::Start() {
     go->box.SetCenter(Vec2(512, 300));
     AddObject(go);
 
-    for (const auto& object : objectArray)
-        object->Start();
+    go = new GameObject();
+    new PenguinBody(*go);
+    go->box.SetCenter(Vec2(704, 640));
+    Camera::Follow(go);
+    AddObject(go);
+
+    size_t len = objectArray.size();
+    for (size_t i = 0; i < len; i++)
+        objectArray[i]->Start();
 
     started = true;
 }
@@ -54,17 +63,46 @@ void State::LoadAssets() {
 void State::Update(float dt) {
     InputManager& inputManager = InputManager::GetInstance();
 
-    if (inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested()) {
+    if (inputManager.WasKeyPressed(ESCAPE_KEY) || inputManager.QuitRequested()) {
         quitRequested = true;
     }
     
-    size_t len = objectArray.size() - 1;
-    for (size_t i = 0; i <= len; i++) {
-        size_t pos = len - i;
-        if (!objectArray[pos]->IsDestroyed()) {
-            objectArray[pos]->Update(dt);
-        } else {
-            objectArray.erase(objectArray.begin() + pos);
+    size_t initialLen = objectArray.size();
+    size_t currLen = initialLen;
+    for (size_t i = 0; i < initialLen; i++) {
+        // Iterates reversed
+        size_t idxi = initialLen - i - 1;
+        auto currObjPtr = objectArray[idxi];
+
+        // Call update if not deleted
+        if (!currObjPtr->IsDestroyed()) {
+            currObjPtr->Update(dt);
+        }
+        
+        // Erases if deleted
+        else {
+            objectArray.erase(objectArray.begin() + idxi);
+            currLen--;
+        }
+
+        // Calculates collision of current object with the ones already checked
+        for (size_t j = 1; j < currLen - idxi; j++) {
+            size_t idxj = idxi + j;
+            auto otherObjPtr = objectArray[idxj];
+            
+            Sprite* currObjSpritePtr = static_cast<Sprite*>(currObjPtr->GetComponent("Sprite"));
+            Sprite* otherObjSpritePtr = static_cast<Sprite*>(otherObjPtr->GetComponent("Sprite"));
+            float angleCurrObj = currObjSpritePtr ? currObjSpritePtr->GetRotation() * M_PI / 180 : 0;
+            float angleOtherObj = otherObjSpritePtr ? otherObjSpritePtr->GetRotation() * M_PI / 180 : 0;
+            if (!Collision::IsColliding(
+                    currObjPtr->box,
+                    otherObjPtr->box,
+                    angleCurrObj,
+                    angleOtherObj
+                )) continue;
+            
+            currObjPtr->NotifyCollision(*otherObjPtr);
+            otherObjPtr->NotifyCollision(*currObjPtr);
         }
     }
 
@@ -72,8 +110,9 @@ void State::Update(float dt) {
 }
 
 void State::Render() {
-    for (const auto& object : objectArray) {
-        object->Render();
+    size_t len = objectArray.size();
+    for (size_t i = 0; i < len; i++) {
+        objectArray[i]->Render();
     }
 }
 
@@ -88,9 +127,11 @@ weak_ptr<GameObject> State::AddObject(GameObject* go) {
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) const {
-    for (const auto& object : objectArray) {
-        if (object.get() == go) {
-            return object;
+    size_t len = objectArray.size();
+    for (size_t i = 0; i < len; i++) {
+        shared_ptr<GameObject> obj = objectArray[i];
+        if (obj.get() == go) {
+            return obj;
         }
     }
     

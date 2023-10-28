@@ -1,8 +1,10 @@
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
 #include "headers/Camera.h"
 #include "headers/InputManager.h"
 #include "headers/Game.h"
-
-using namespace std;
 
 GameObject* Camera::focus = nullptr;
 Vec2 Camera::pos;
@@ -11,20 +13,29 @@ Vec2 Camera::speed;
 #define baseSpeed 500
 void Camera::Update(float dt) {
     if (focus != nullptr) {
-        int *w = nullptr, *h = nullptr;
-        SDL_GetRendererOutputSize(Game::GetInstance().GetRenderer(), w, h);
-        pos = focus->box.Center() - Vec2(*w / 2, *h / 2);
+        int w, h;
+
+        pos = Vec2(0,0);
+        int result = SDL_GetRendererOutputSize(Game::GetInstance().GetRenderer(), &w, &h);
+        if (result) {
+            cerr << "Game: Failed to get Renderer Output Size.\nError: " << SDL_GetError() << endl;
+        } else if (w && h) {
+            pos -= Vec2(w / 2, h / 2);
+        } else { // Em último caso, tentamos ao menos usar o valor inicial do tamanho...
+            pos -= Vec2(Game::WIN_WIDTH / 2, Game::WIN_HEIGHT / 2);
+        }
+        pos += focus->box.Center();
     } else {
         speed = { 0, 0 };
 
         InputManager& inputManager = InputManager::GetInstance();
         speed.x = baseSpeed * (
-            (inputManager.IsKeyDown(RIGHT_ARROW_KEY) || inputManager.IsKeyDown(D_KEY)) -
-            (inputManager.IsKeyDown(LEFT_ARROW_KEY) || inputManager.IsKeyDown(A_KEY))
+            (inputManager.IsKeyPressed(RIGHT_ARROW_KEY) || inputManager.IsKeyPressed(D_KEY)) -
+            (inputManager.IsKeyPressed(LEFT_ARROW_KEY) || inputManager.IsKeyPressed(A_KEY))
         );
         speed.y = baseSpeed * (
-            (inputManager.IsKeyDown(DOWN_ARROW_KEY) || inputManager.IsKeyDown(S_KEY)) -
-            (inputManager.IsKeyDown(UP_ARROW_KEY) || inputManager.IsKeyDown(W_KEY))
+            (inputManager.IsKeyPressed(DOWN_ARROW_KEY) || inputManager.IsKeyPressed(S_KEY)) -
+            (inputManager.IsKeyPressed(UP_ARROW_KEY) || inputManager.IsKeyPressed(W_KEY))
         );
 
         pos += speed * dt;

@@ -26,13 +26,13 @@ public:
 
     void Update();
 
-    bool KeyPress(int key);
-    bool KeyRelease(int key);
-    bool IsKeyDown(int key);
+    bool WasKeyPressed(int key);
+    bool WasKeyReleased(int key);
+    bool IsKeyPressed(int key);
 
-    bool MousePress(int button) const;
-    bool MouseRelease(int button) const;
-    bool IsMouseDown(int button) const;
+    bool WasMousePressed(int button) const;
+    bool WasMouseReleased(int button) const;
+    bool IsMousePressed(int button) const;
 
     int GetMouseX() const;
     int GetMouseY() const;
@@ -41,7 +41,6 @@ public:
 
 private:
     InputManager();
-    ~InputManager();
 
     bool mouseState[6];
     int mouseUpdate[6];
@@ -57,11 +56,11 @@ private:
     int mouseY;
 };
 
-inline bool InputManager::IsKeyDown(int key) {
+inline bool InputManager::IsKeyPressed(int key) {
     return keyState[key];
 }
 
-inline bool InputManager::IsMouseDown(int button) const {
+inline bool InputManager::IsMousePressed(int button) const {
     return mouseState[button];
 }
 

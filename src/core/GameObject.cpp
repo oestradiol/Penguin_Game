@@ -14,16 +14,17 @@ GameObject::~GameObject() {
 }
 
 void GameObject::Start() {
-    for (const auto& component : components)
-        component->Start();
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++)
+        components[i]->Start();
     
     started = true;
 }
 
 void GameObject::Update(float dt) {
-    size_t len = components.size() - 1;
-    for (size_t i = 0; i <= len; i++) {
-        size_t pos = len - i;
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++) {
+        size_t pos = len - i - 1;
         if (!components[pos]->IsDestroyed()) {
             components[pos]->Update(dt);
         } else {
@@ -33,8 +34,9 @@ void GameObject::Update(float dt) {
 }
 
 void GameObject::Render() {
-    for (auto& component : components) {
-        component->Render();
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++) {
+        components[i]->Render();
     }
 }
 
@@ -45,9 +47,9 @@ void GameObject::AddComponent(Component* cpt) {
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
-    size_t len = components.size() - 1;
-    for (size_t i = 0; i <= len; i++) {
-        size_t pos = len - i;
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++) {
+        size_t pos = len - i - 1;
         if (components[pos].get() == cpt) {
             components.erase(components.begin() + pos);
             return;
@@ -56,19 +58,36 @@ void GameObject::RemoveComponent(Component* cpt) {
 }
 
 Component* GameObject::GetComponent(const string& type) const {
-    for (const auto& component : components) {
-        if (component->Is(type)) {
-            return component.get();
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++) {
+        if (components[i]->Is(type)) {
+            return components[i].get();
         }
     }
     return nullptr;
 }
 
-vector<Component*> GameObject::GetAllComponents() const {
-    vector<Component*> result;
-    result.resize(components.size());
-    for (auto& component : components) {
-        result.push_back(component.get());
+set<string> GameObject::HasComponentsOfTypes(set<string> types) const {
+    set<string> result;
+
+    size_t leni = components.size();
+    for (size_t i = 0; i < leni; i++) {
+        for (auto j = types.begin(); j != types.end();) {
+            if (components[i]->Is(*j)) {
+                result.insert(*j);
+                j = types.erase(j);
+                continue;
+            }
+            j++;
+        }
     }
+
     return result;
+}
+
+void GameObject::NotifyCollision(GameObject& other) const {
+    size_t len = components.size();
+    for (size_t i = 0; i < len; i++) {
+        components[i]->NotifyCollision(other);
+    }
 }

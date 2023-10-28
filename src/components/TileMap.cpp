@@ -14,10 +14,6 @@ TileMap::TileMap(GameObject& associated, const string& file, TileSet* tileSet)
     Load(file);
 }
 
-void TileMap::Start() {
-    started = true;
-}
-
 void TileMap::Load(const string& file) {
  
     ifstream mapFile(file);
@@ -73,8 +69,6 @@ void TileMap::Render() {
         RenderLayer(i, x * parallaxOffset, y * parallaxOffset);
     }
 }
-
-void TileMap::Update(float dt) { }
 
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
     if (tileSet == nullptr) {

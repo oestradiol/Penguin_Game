@@ -5,42 +5,35 @@
 #include <memory>
 
 #include "../../utils/headers/Vec2.h"
-#include "Component.h"
-
-#define ALIEN_SPEED 300
+#include "Being.h"
 
 class GameObject;
 
-class Alien : public Component {
+class Alien : public Being {
 public:
+    static constexpr float SPEED = 150;
+    static constexpr int COOLDOWN_TIME = 1;
+    static int alienCount;
+
     Alien(GameObject& associated, int nMinions);
     ~Alien();
 
     void Start() override;
     void Update(float dt) override;
-    void Render() override;
+
+    void NotifyCollision(GameObject& other) override;
 
     bool Is(const std::string& type) const override;
 
 private:
-    class Action {
-    public:
-        enum ActionType { MOVE, SHOOT };
-
-        Action(ActionType type, float x, float y);
-
-        ActionType type;
-        Vec2 pos;
-    };
-
+    enum AlienState { MOVING, RESTING };
     int nMinions;
-    Vec2 speed;
-    int hp;
-
-    std::queue<Action> taskQueue;
+    AlienState state;
+    Timer restTimer;
+    Vec2 destination; 
     std::vector<std::weak_ptr<GameObject>> minionArray;
 };
 
-inline bool Alien::Is(const string& type) const {
-    return type == "Alien";
+inline bool Alien::Is(const std::string& type) const {
+    return type == "Alien" || Being::Is(type);
 }

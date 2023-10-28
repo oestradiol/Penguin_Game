@@ -9,6 +9,9 @@
 
 class Game {
 public:
+    static constexpr int WIN_WIDTH = 1024;
+    static constexpr int WIN_HEIGHT = 600;
+
     ~Game();
 
     void Run();

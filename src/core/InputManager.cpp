@@ -13,8 +13,6 @@ InputManager::InputManager()
     }
 }
 
-InputManager::~InputManager() { }
-
 void InputManager::Update() {
     SDL_GetMouseState(&mouseX, &mouseY);
     quitRequested = false;
@@ -57,18 +55,18 @@ void InputManager::Update() {
     }
 }
 
-bool InputManager::KeyPress(int key) {
-    return (IsKeyDown(key) && (keyUpdate[key] == updateCounter));
+bool InputManager::WasKeyPressed(int key) {
+    return (IsKeyPressed(key) && (keyUpdate[key] == updateCounter));
 }
 
-bool InputManager::KeyRelease(int key) {
-    return (!IsKeyDown(key) && (keyUpdate[key] == updateCounter));
+bool InputManager::WasKeyReleased(int key) {
+    return (!IsKeyPressed(key) && (keyUpdate[key] == updateCounter));
 }
 
-bool InputManager::MousePress(int button) const {
-    return (IsMouseDown(button) && (mouseUpdate[button] == updateCounter));
+bool InputManager::WasMousePressed(int button) const {
+    return (IsMousePressed(button) && (mouseUpdate[button] == updateCounter));
 }
 
-bool InputManager::MouseRelease(int button) const {
-    return (!IsMouseDown(button) && (mouseUpdate[button] == updateCounter));
+bool InputManager::WasMouseReleased(int button) const {
+    return (!IsMousePressed(button) && (mouseUpdate[button] == updateCounter));
 }

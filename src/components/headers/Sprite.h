@@ -5,22 +5,25 @@
 
 #include <string>
 
+#include "../../utils/headers/Timer.h"
+
 #include "Component.h"
 
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
-    Sprite(GameObject& associated, const std::string& file);
+    Sprite(GameObject& associated, const std::string& file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
 
-    void Open(const std::string& file);
-    void SetClip(int x, int y, int w, int h);
-
-    void Start() override;
     void Render() override;
-    void Render(int x, int y, Vec2 dimensions);
+    void Render(int x, int y, Vec2 dimensions) const;
     
     void Update(float dt) override;
     bool Is(const std::string& type) const override;
+
+    bool IsOpen() const;
+
+    void Open(const std::string& file);
+    void SetClip(int x, int y, int w, int h);
     
     void SetRotation(double angleDeg);
     double GetRotation() const;
@@ -30,7 +33,10 @@ public:
 
     int GetWidth() const;
     int GetHeight() const;
-    bool IsOpen() const;
+
+    void SetFrame(int frame);
+    void SetFrameCount(int frameCount);
+    void SetFrameTime(float frameTime);
 
 private:
     SDL_Texture* texture;
@@ -39,6 +45,12 @@ private:
     Vec2 scale;
     double angleDeg;
     SDL_Rect clipRect;
+    int frameCount;
+    int currentFrame;
+    float timeElapsed;
+    float frameTime;
+    float secondsToSelfDestruct; 
+    Timer selfDestructCount;
 };
 
 inline bool Sprite::Is(const std::string& type) const {
@@ -46,11 +58,11 @@ inline bool Sprite::Is(const std::string& type) const {
 }
 
 inline int Sprite::GetWidth() const {
-    return width * scale.x;
+    return scale.x * width / frameCount;
 }
 
 inline int Sprite::GetHeight() const {
-    return height * scale.y;
+    return scale.y * height;
 }
 
 inline bool Sprite::IsOpen() const {
@@ -67,4 +79,13 @@ inline double Sprite::GetRotation() const {
 
 inline Vec2 Sprite::GetScale() const {
     return scale;
+}
+
+inline void Sprite::SetFrame(int frame) {
+    currentFrame = frame % frameCount;
+    SetClip(currentFrame * clipRect.w, clipRect.y, clipRect.w, clipRect.h);
+}
+
+inline void Sprite::SetFrameTime(float frameTime) {
+    this->frameTime = frameTime;
 }

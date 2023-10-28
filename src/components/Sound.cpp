@@ -15,10 +15,6 @@ Sound::~Sound() {
     Stop();
 }
 
-void Sound::Start() {
-    started = true;
-}
-
 void Sound::Play(int times) {
     if (chunk) {
         channel = Mix_PlayChannel(-1, chunk, times - 1);
@@ -42,7 +38,3 @@ void Sound::Open(const string& file) {
 bool Sound::IsPlaying() const {
     return channel != -1 && Mix_Playing(channel);
 }
-
-void Sound::Update(float _) { }
-
-void Sound::Render() { }

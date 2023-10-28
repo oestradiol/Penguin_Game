@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++14 -Wall -Wextra -Wno-unused-parameter -Werror=init-self
+CFLAGS = -std=c++17 -Wall -Wextra -Wno-unused-parameter -Werror=init-self
 LIBS = -lm -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 SRC_DIR=src
