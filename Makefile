@@ -6,8 +6,8 @@ SRC_DIR=src
 OBJ_DIR=obj
 BIN_DIR=bin
 
-SRC_FILES = $(wildcard $(SRC_DIR)/**/*.cpp) $(SRC_DIR)/Main.cpp
-OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
+SRC_FILES = $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 DEP_FILES = $(OBJ_FILES:.o=.d)
 
 DEBUG ?= 0
